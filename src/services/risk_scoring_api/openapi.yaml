@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: Integrity Risk Scoring API
+  version: 0.1.0
+paths:
+  /health:
+    get:
+      responses:
+        '200': { description: OK }
+  /score:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RiskRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RiskResponse'
+components:
+  schemas:
+    Entity:
+      type: object
+      properties:
+        entity_id: { type: string }
+        entity_type: { type: string }
+      required: [entity_id, entity_type]
+    Signal:
+      type: object
+      properties:
+        name: { type: string }
+        value: { type: number }
+      required: [name, value]
+    RiskRequest:
+      type: object
+      properties:
+        entities:
+          type: array
+          items: { $ref: '#/components/schemas/Entity' }
+        signals:
+          type: array
+          items: { $ref: '#/components/schemas/Signal' }
+      required: [entities, signals]
+    RiskResponse:
+      type: object
+      properties:
+        risk_score: { type: number }
+        reasons:
+          type: array
+          items: { type: string }
+      required: [risk_score, reasons]
